@@ -1,5 +1,6 @@
 import { Context, Telegraf } from 'telegraf'
 import {getUpdate} from './webScraper'
+import {message} from "telegraf/filters";
 
 const BOT_TOKEN = '6460297373:AAEyTFGpfLLn5tBtMDKsbSZZzTCGa-nMieo'; // Replace with the token you obtained from BotFather
 
@@ -16,6 +17,7 @@ function getRandomInt(max: number) {
 const sendMsg = async (chatId:any, messages:any) => {
     try {
         const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        messages = [...messages].reverse()
 
         for (const msg of messages){
             const imgSrc = msg.imgSrc
@@ -42,8 +44,11 @@ const sendMsg = async (chatId:any, messages:any) => {
 
                 console.log('Message sent successfully!');
         }
+
+        return true
     } catch (error:any) {
         console.error('Error sending message:', error.message);
+        return false
     }
 };
 
@@ -54,6 +59,9 @@ async function intervalCheck(){
         console.log("New Update")
         await sendMsg(chatId, msg)
     }
+    else {
+        console.log(`No News ${msg}`)
+    }
 }
 
 bot.command('start_fetch', intervalCheck)
@@ -61,7 +69,7 @@ bot.command('start_fetch', intervalCheck)
 bot.action('approved', (ctx) => {
 
     if (ctx.callbackQuery?.message) {
-        const messages = ['*Додано в новини!*', '*Ура додано новину!*', '*Мені теж ця новина сподобалась)*', '*Ууууфффф шикарно, додано ще одну новину!*', '~~Я хочу знищити людей!!!~~ тобто *Новину додано)))*']
+        const messages = ['*Додано в новини!*', '*Ура додано новину!*', '*Мені теж ця новина сподобалась)*', '*Ууууфффф шикарно, додано ще одну новину!*', '~Я хочу знищити людей!!!~ тобто *Новину додано)))*']
         const randomArrayIndex = getRandomInt(messages.length)
         ctx.reply(messages[randomArrayIndex], {
             reply_to_message_id: ctx.callbackQuery.message.message_id,
@@ -82,7 +90,7 @@ bot.action('rejected', (ctx) => {
     }
 });
 
-const checkDelay = 5 * 1000
+const checkDelay = 10 * 1000
 setTimeout(async function run() {
     await intervalCheck()
     setTimeout(async () => {await run}, checkDelay);
