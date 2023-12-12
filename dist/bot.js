@@ -21,6 +21,7 @@ function getRandomInt(max) {
 const sendMsg = (chatId, messages) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        messages = [...messages].reverse();
         for (const msg of messages) {
             const imgSrc = msg.imgSrc;
             const title = msg.title;
@@ -39,27 +40,31 @@ const sendMsg = (chatId, messages) => __awaiter(void 0, void 0, void 0, function
             });
             console.log('Message sent successfully!');
         }
+        return true;
     }
     catch (error) {
         console.error('Error sending message:', error.message);
+        return false;
     }
 });
 function intervalCheck() {
     return __awaiter(this, void 0, void 0, function* () {
         const msg = yield (0, webScraper_1.getUpdate)(siteURL);
-        // console.log(msg)
-        if (msg) {
-            // console.log("New Update")
-            // await sendMsg(chatId, msg)
-        }
         console.log(msg);
+        if (msg) {
+            console.log("New Update");
+            yield sendMsg(chatId, msg);
+        }
+        else {
+            console.log(`No News ${msg}`);
+        }
     });
 }
 bot.command('start_fetch', intervalCheck);
 bot.action('approved', (ctx) => {
     var _a;
     if ((_a = ctx.callbackQuery) === null || _a === void 0 ? void 0 : _a.message) {
-        const messages = ['*Додано в новини!*', '*Ура додано новину!*', '*Мені теж ця новина сподобалась)*', '*Ууууфффф шикарно, додано ще одну новину!*', '~~Я хочу знищити людей!!!~~ тобто *Новину додано)))*'];
+        const messages = ['*Додано в новини!*', '*Ура додано новину!*', '*Мені теж ця новина сподобалась)*', '*Ууууфффф шикарно, додано ще одну новину!*', '~Я хочу знищити людей!!!~ тобто *Новину додано)))*'];
         const randomArrayIndex = getRandomInt(messages.length);
         ctx.reply(messages[randomArrayIndex], {
             reply_to_message_id: ctx.callbackQuery.message.message_id,
@@ -78,20 +83,17 @@ bot.action('rejected', (ctx) => {
         });
     }
 });
-// const checkDelay = 5 * 1000
-// setTimeout(function run() {
-//     intervalCheck()
-//     setTimeout(run, checkDelay);
-// }, checkDelay);
-intervalCheck();
-setTimeout(() => {
-    console.log("Call second");
-    intervalCheck();
-}, 6000);
-// //TESTS
-// intervalCheck()
-//bot.telegram.sendPhoto(chatId, 'https://izvestia.kiev.ua/images/items/2021-11/01/Zu3n03rhetz89xSA/image/2.jpg')
-bot.telegram.sendPhoto(chatId, 'https://izvestia.kiev.ua/images/items/2021-11/01/Zu3n03rhetz89xSA/image/2.jpg', { "reply_markup": { "inline_keyboard": [[{ "text": "test button", "callback_data": "test" }]] }, caption: 'cute kitty' });
+const checkDelay = 10 * 1000;
+setTimeout(function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield intervalCheck();
+        setTimeout(() => __awaiter(this, void 0, void 0, function* () { yield run; }), checkDelay);
+    });
+}, checkDelay);
+//TESTS
+bot.command('test', () => {
+    bot.telegram.sendPhoto(chatId, 'https://izvestia.kiev.ua/images/items/2021-11/01/Zu3n03rhetz89xSA/image/2.jpg', { "reply_markup": { "inline_keyboard": [[{ "text": "test button", "callback_data": "test" }]] }, caption: 'cute kitty' });
+});
 bot.action('test', (ctx) => {
     ctx.reply("IDI NAHUI");
 });

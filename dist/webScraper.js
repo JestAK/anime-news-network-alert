@@ -16,7 +16,7 @@ let lastNews = {
     imgSrc: '',
     title: '',
     description: '',
-    src: '',
+    src: 'https://example.com',
 };
 function getUpdate(targetUrl) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -53,11 +53,13 @@ function getUpdate(targetUrl) {
                 };
                 if (isUpdated(src, lastNews.src)) {
                     newsObjArray.push(newsObj);
+                    lastNews.src = newsObjArray[0].src;
+                }
+                else {
+                    return false;
                 }
             });
-            lastNews.src = newsObjArray[0].src;
             console.log(lastNews.src);
-            console.log(newsObjArray[0].src);
             console.log(newsObjArray);
             return newsObjArray;
         });
