@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import {first} from "cheerio/lib/api/traversing";
 
 
 let lastNews = {
@@ -8,6 +9,8 @@ let lastNews = {
     description: '',
     src: 'https://example.com',
 }
+
+let isFirstRun = true
 
 export async function getUpdate(targetUrl: string){
 
@@ -47,12 +50,20 @@ export async function getUpdate(targetUrl: string){
 
             if (isUpdated(src, lastNews.src)){
                 newsObjArray.push(newsObj)
-                lastNews.src = newsObjArray[0].src
+                if (isFirstRun){
+                    isFirstRun = false
+                    return false
+                }
             }
             else {
                 return false
             }
         })
+
+        //Set last news src
+        if (newsObjArray.length !== 0){
+            lastNews.src = newsObjArray[0].src
+        }
 
         console.log(lastNews.src)
         console.log(newsObjArray)

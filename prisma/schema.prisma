@@ -11,11 +11,12 @@ datasource db {
 }
 
 model News {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   imageSrc    String
   description String
   originalSrc String
-  date        DateTime
-  messageId   String
+  date        DateTime? @default(now())
+  messageId   String    @unique
+  approved    Boolean?  @default(true)
 }

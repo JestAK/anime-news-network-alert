@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "tsc && node dist/bot.js",
-    "dev": "nodemon - exec 'ts-node' src/bot.js"
+    "dev": "tsc && nodemon - exec 'ts-node' src/bot.js"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
@@ -15,8 +15,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "@types/node-schedule": "^2.1.5",
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12",
+    "node-schedule": "^2.1.1",
     "telegraf": "^4.15.3"
   },
   "keywords": [],
