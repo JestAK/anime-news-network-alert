@@ -72,6 +72,7 @@ async function intervalCheck(){
     const msg = await getUpdate(siteURL)
     // console.log(msg)
     console.log("Got news!")
+
     if (msg.length !== 0){
         console.log("New Update")
         let mss = await sendMsg(chatId, msg)
@@ -135,7 +136,7 @@ bot.action('rejected', async (ctx) => {
     }
 });
 
-const checkDelay = 20 * 1000
+const checkDelay = 60 * 1000
 setTimeout(async function run() {
     console.log("First STO")
     await intervalCheck()
@@ -143,7 +144,7 @@ setTimeout(async function run() {
     setTimeout(async () => {await run()}, checkDelay);
 }, checkDelay);
 
-const weeklyList = scheduleJob('* * 12 * * 6', async function () {
+const weeklyList = scheduleJob('0 0 12 * * 6', async function () {
 
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);

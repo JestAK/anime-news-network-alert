@@ -21,53 +21,59 @@ export async function getUpdate(targetUrl: string){
             return response.data;
         } catch (error) {
             console.error('Error fetching website content:', error);
-            return null;
+            return [];
         }
     };
 
     const getNews = async () => {
-        const fetchedData = await fetchWebsiteContent()
-        const $ = cheerio.load(fetchedData)
-        const newsBlocks = $('[data-topics*="news"][data-topics*="anime"]')
-        let newsObjArray:any[] = []
+        try {
+            const fetchedData = await fetchWebsiteContent()
+            const $ = cheerio.load(fetchedData)
+            const newsBlocks = $('[data-topics*="news"][data-topics*="anime"]')
+            let newsObjArray:any[] = []
 
-        newsBlocks.each((index, element) => {
-            const src = `${targetUrl}${$(element).find('.thumbnail > a ').attr('href')}`
-            const imgSrc = `${targetUrl}${$(element).find('.thumbnail').attr('data-src')}`
-            const title = $(element).find('.wrap h3 a').contents().map(function() {
-                return $(this).text();
-            }).get().join('').trim()
-            const description = $(element).find('.wrap .snippet').contents().map(function() {
-                return $(this).text();
-            }).get().join('').trim()
+            newsBlocks.each((index, element) => {
+                const src = `${targetUrl}${$(element).find('.thumbnail > a ').attr('href')}`
+                const imgSrc = `${targetUrl}${$(element).find('.thumbnail').attr('data-src')}`
+                const title = $(element).find('.wrap h3 a').contents().map(function() {
+                    return $(this).text();
+                }).get().join('').trim()
+                const description = $(element).find('.wrap .snippet').contents().map(function() {
+                    return $(this).text();
+                }).get().join('').trim()
 
-            const newsObj = {
-                imgSrc,
-                title,
-                description,
-                src,
-            }
+                const newsObj = {
+                    imgSrc,
+                    title,
+                    description,
+                    src,
+                }
 
-            if (isUpdated(src, lastNews.src)){
-                newsObjArray.push(newsObj)
-                if (isFirstRun){
-                    isFirstRun = false
+                if (isUpdated(src, lastNews.src)){
+                    newsObjArray.push(newsObj)
+                    if (isFirstRun){
+                        isFirstRun = false
+                        return false
+                    }
+                }
+                else {
                     return false
                 }
-            }
-            else {
-                return false
-            }
-        })
+            })
 
-        //Set last news src
-        if (newsObjArray.length !== 0){
-            lastNews.src = newsObjArray[0].src
+            //Set last news src
+            if (newsObjArray.length !== 0){
+                lastNews.src = newsObjArray[0].src
+            }
+
+            console.log(lastNews.src)
+            console.log(newsObjArray)
+            return newsObjArray
+        } catch (error){
+            console.error('Error fetching website content:', error);
+            return [];
         }
 
-        console.log(lastNews.src)
-        console.log(newsObjArray)
-        return newsObjArray
     }
 
 // Function to compare current and previous content
