@@ -45,6 +45,7 @@ const sendMsg = async (chatId:any, messages:any, toDB: boolean = true) => {
                 });
 
             console.log('Message sent successfully!');
+            console.log(new Date());
 
             const messageId = sentMessage.message_id;
             console.log(messageId)
@@ -60,9 +61,11 @@ const sendMsg = async (chatId:any, messages:any, toDB: boolean = true) => {
         }
 
         console.log("All news has been sent")
+        console.log(new Date());
         return true
     } catch (error:any) {
         console.error('Error sending message:', error.message);
+        console.log(new Date());
         return false
     }
 };

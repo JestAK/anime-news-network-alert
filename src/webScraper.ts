@@ -3,12 +3,7 @@ import * as cheerio from 'cheerio';
 import {first} from "cheerio/lib/api/traversing";
 
 
-let lastNews = {
-    imgSrc: '',
-    title: '',
-    description: '',
-    src: 'https://example.com',
-}
+let lastNewsSrc: string = 'https://example.com'
 
 let isFirstRun = true
 
@@ -21,6 +16,7 @@ export async function getUpdate(targetUrl: string){
             return response.data;
         } catch (error) {
             console.error('Error fetching website content:', error);
+            console.log(new Date());
             return [];
         }
     };
@@ -49,7 +45,7 @@ export async function getUpdate(targetUrl: string){
                     src,
                 }
 
-                if (isUpdated(src, lastNews.src)){
+                if (isUpdated(src, lastNewsSrc)){
                     newsObjArray.push(newsObj)
                     if (isFirstRun){
                         isFirstRun = false
@@ -63,14 +59,16 @@ export async function getUpdate(targetUrl: string){
 
             //Set last news src
             if (newsObjArray.length !== 0){
-                lastNews.src = newsObjArray[0].src
+                lastNewsSrc = newsObjArray[0].src
             }
 
-            console.log(lastNews.src)
+            console.log(lastNewsSrc)
             console.log(newsObjArray)
+            console.log(new Date());
             return newsObjArray
         } catch (error){
             console.error('Error fetching website content:', error);
+            console.log(new Date());
             return [];
         }
 
