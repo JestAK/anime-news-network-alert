@@ -1,17 +1,17 @@
-import { Context, Telegraf } from 'telegraf'
+import { Telegraf } from 'telegraf'
 import {getUpdate} from './webScraper'
-import {message} from "telegraf/filters";
 import {addNews, setStatus, getDateRangeList} from './dbClient'
 import {scheduleJob} from 'node-schedule';
+require('dotenv').config();
 
 
-const BOT_TOKEN = '6460297373:AAEyTFGpfLLn5tBtMDKsbSZZzTCGa-nMieo'; // Replace with the token you obtained from BotFather
+const BOT_TOKEN: string = process.env.BOT_TOKEN!
 
-const bot = new Telegraf(BOT_TOKEN);
+const bot = new Telegraf(BOT_TOKEN)
 
 const siteURL = 'https://www.animenewsnetwork.com/'
 
-const chatId = '-1002055191267'
+const chatId: string = process.env.CHATID!
 
 function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);

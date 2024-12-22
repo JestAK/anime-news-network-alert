@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import {first} from "cheerio/lib/api/traversing";
 
 
 let lastNewsSrc: string = 'https://example.com'
